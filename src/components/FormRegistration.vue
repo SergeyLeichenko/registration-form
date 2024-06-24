@@ -141,7 +141,6 @@ const url = 'https://t.me/rgb_hr';
 const submitForm = async () => {
 
   if (form.phone.length === 17) {
-    console.log('ok', form);
     await axios.post(url, {
       data: form
     })
