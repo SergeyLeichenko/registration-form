@@ -1,0 +1,38 @@
+@import "_variables";
+
+//fonts
+@font-face {
+  font-family: "Gilroy";
+  src: url("~@/assets/fonts/Gilroy-Bold.ttf") format("ttf");
+  font-style: normal;
+  font-weight: 800;
+}
+@font-face {
+  font-family: "Gilroy";
+  src: url("~@/assets/fonts/Gilroy-Medium.ttf") format("ttf");
+  font-style: normal;
+  font-weight: 500;
+}
+@font-face {
+  font-family: "Gilroy";
+  src: url("~@/assets/fonts/Gilroy-Regular.ttf") format("ttf");
+  font-style: normal;
+  font-weight: 400;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Gilroy', sans-serif;
+  background: $bg;
+  color: $white;
+  font-weight: 400;
+}
+
+a {
+  text-decoration: none;
+}
