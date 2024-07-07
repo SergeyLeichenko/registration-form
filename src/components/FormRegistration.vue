@@ -6,21 +6,35 @@
       </div>
 
       <div class="form__field">
-        <input type="text" placeholder="Ваше имя и фамилия" v-model.trim="form.name" @blur="v$.name.$touch()"
-          :class="{ invalid: v$.name.$invalid }" />
-        <small class="valid" v-if="v$.name.$invalid">{{ v$.name.required.$message }}</small>
+        <input 
+          type="text" 
+          placeholder="Ваше имя и фамилия" 
+          v-model="v$.name.$model"
+          :class="{ 'error-border': v$.name.$error }" 
+        />
+        <small class="error" v-if="v$.name.$error">{{ v$.name.required.$message }}</small>
       </div>
 
       <div class="form__field">
-        <input type="text" placeholder="Ваш номер телефона" v-model="form.phone"
-          :class="{ invalid: form.phone.length === 0}" v-maska="'+##(###)###-##-##'" maxlength="17" />
-        <small class="valid" v-if="form.phone.length < 16">{{ v$.phone.$message }}</small>
+        <input 
+          type="text" 
+          placeholder="Ваш номер телефона" 
+          v-model="v$.phone.$model"
+          :class="{ 'error-border': v$.phone.$error }" 
+          v-maska="'+##(###)###-##-##'" 
+          maxlength="17" 
+        />
+        <small class="error" v-if="v$.phone.$error">{{ v$.phone.phone.$message }}</small>
       </div>
 
       <div class="form__field">
-        <input type="email" placeholder="Ваш email" v-model="form.email"
-          :class="{ invalid: v$.email.email.$invalid }" />
-        <small class="valid" v-if="v$.email.email.$invalid">{{ v$.email.email.$message }}</small>
+        <input
+          type="email" 
+          placeholder="Ваш email" 
+          v-model="v$.email.$model"
+          :class="{ 'error-border': v$.email.$error }" 
+        />
+        <small class="error" v-if="v$.email.$error">{{ v$.email.email.$message }}</small>
       </div>
 
       <div class="form__field button">
@@ -70,18 +84,18 @@
         border-radius: 5px;
         border: 0;
         color: $white;
+        outline: none;
 
         &::placeholder {
           font-size: 13px;
           color: $white;
         }
       }
-
-      .invalid {
+      .error-border {
         border: 2px solid $red;
       }
 
-      .valid {
+      .error {
         color: $red;
         font-size: 12px;
       }
@@ -112,11 +126,12 @@
 </style>
 
 <script setup>
-import { reactive } from 'vue';
+import { reactive, defineEmits, computed } from 'vue';
 import useVuelidate from '@vuelidate/core';
 import { required, email, helpers } from '@vuelidate/validators';
 import { vMaska } from "maska/vue";
-import axios from 'axios';
+
+const emit = defineEmits(['submit'])
 
 const form = reactive({
   name: '',
@@ -124,31 +139,30 @@ const form = reactive({
   email: ''
 })
 
-const rules = {
-  name: {
+const rules = computed(() => {
+  return {
+    name: {
     required: helpers.withMessage('Введите имя и фамилию', required)
-  },
-  phone: helpers.withMessage('Введите номер телефона', required),
-  email: {
-    email: helpers.withMessage('Введите email', email)
+    },
+    phone: {
+      phone: helpers.withMessage('Введите номер телефона', required)
+    },
+    email: {
+      email: helpers.withMessage('Введите коректний email', required, email)
+    }
   }
-}
+})
 
-const v$ = useVuelidate(rules, form)
-
-const url = 'https://t.me/rgb_hr';
+const v$ = useVuelidate(rules, form);
 
 const submitForm = async () => {
+  const result = await v$._value.$validate()
 
-  if (form.phone.length === 17) {
-    await axios.post(url, {
-      data: form
-    })
-    .then((resp) => {
-      console.log(resp);
-    })
+  if (!result) {
+    alert('Fill in all fields!')
   } else {
-    alert('Заполните все поля')
+    alert('Form submited')
+    emit('submit', form);
   }
 }
 

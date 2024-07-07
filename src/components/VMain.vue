@@ -58,8 +58,20 @@
 </template>
 
 <script setup>
-import Header from './VHeader.vue';
-import FormRegistration from './FormRegistration.vue';
+import Header from './VHeader.vue'
+import FormRegistration from './FormRegistration.vue'
+import axios from 'axios'
+
+const url = 'https://t.me/rgb_hr'
+
+const submitForm = async (data) => {
+  await axios.post(url, {
+    data: data
+  })
+    .then((resp) => {
+      console.log(resp)
+    })
+}
 </script>
 
 <style scoped lang="scss">
@@ -256,9 +268,11 @@ import FormRegistration from './FormRegistration.vue';
             flex-direction: column-reverse;
             width: 270px;
             margin: auto;
+
             .men {
               margin-bottom: 0;
             }
+
             .box {
               margin-bottom: 19px;
             }
@@ -268,9 +282,11 @@ import FormRegistration from './FormRegistration.vue';
             }
           }
         }
+
         &__form {
           margin-left: 0;
           margin-top: 20px;
+
           .form-wrap {
             margin: auto;
           }
